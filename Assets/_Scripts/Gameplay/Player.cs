@@ -43,15 +43,18 @@ namespace PongGame.Player
         private void Inputs()
         {
 
-            if(ESC)
+            ESC = Input.GetKeyDown(KeyCode.Escape);
+
+            moveInput = Input.GetAxisRaw("Vertical");
+
+
+            if (ESC && (GameManager.Instance.State == GameState.Gameplay || GameManager.Instance.State == GameState.Pause ))
             {
                 GameManager.Instance.UpdateGameState(GameState.Pause);
             }
 
 
-            ESC = Input.GetKeyDown(KeyCode.Escape);
-
-            moveInput = Input.GetAxisRaw("Vertical");
+           
 
 
         }

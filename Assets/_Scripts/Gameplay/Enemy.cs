@@ -4,79 +4,67 @@ using UnityEngine;
 using PongGame.Interfaces;
 using System.Threading;
 using PongGame.Managers;
+using UnityEditor;
 
 namespace PongGame.Enemy
 {
     public class Enemy : MonoBehaviour, IHeight
     {
 
-        [SerializeField] private float timeToRandom;
+        [SerializeField] private float speed = 6f;
+        [SerializeField] private float positionThreshold = 0.2f;
         [Space(5)]
-        [SerializeField] private float randomMax;
-        [SerializeField] private float randomMin;
-        [Space(5)]
-        [SerializeField] private LayerMask layerMask;
 
 
-        private float time;
-        private float randomValue;
 
         private bool isGrow;
-
-        private Vector2 workSpace;
+        private bool inRight;
 
         private Rigidbody2D RB;
-        private Animator animator;
         private Transform ball;
 
         void Awake()
         {
             RB = GetComponent<Rigidbody2D>();
-            animator = GetComponent<Animator>();
             ball = GameObject.FindGameObjectWithTag("Ball").transform;
-            randomValue = Random.Range(randomMin, randomMax);
-
-            time = Time.time;
-        }
-
-        private void Update()
-        {
-
-            RandomizeValue();
-            Moving();
+            inRight = transform.position.x > 0.1f ? true : false;
 
         }
-
 
         private void FixedUpdate()
         {
+            float diff = ball.position.y - transform.position.y;    
+            Rigidbody2D ballRB = ball.GetComponent<Rigidbody2D>();
 
-            RB.velocity = workSpace;
-
-        }
-
-        private void Moving()
-        {
-            if (ball.position.y > transform.position.y)
+            if (ballRB.velocity.x > 0 && inRight)
             {
-                workSpace.Set(transform.position.x, randomValue);
-            }
-            else if (ball.position.y < transform.position.y)
+                if(Mathf.Abs(diff) > positionThreshold)
+                {
+                    float direction = Mathf.Sign(diff);
+                    RB.velocity = new Vector2(0, direction * speed);
+                }
+                else
+                {
+                    RB.velocity = Vector2.zero;
+                }
+
+            }else if(ballRB.velocity.x < 0 && !inRight)
             {
-                workSpace.Set(transform.position.x, -randomValue);
-
+                if (Mathf.Abs(diff) > positionThreshold)
+                {
+                    float direction = Mathf.Sign(diff);
+                    RB.velocity = new Vector2(0, direction * speed);
+                }
+                else
+                {
+                    RB.velocity = Vector2.zero;
+                }
             }
-        }
-        private void RandomizeValue()
-        {
-
-            if (Time.time >= time + timeToRandom)
+            else
             {
-                randomValue = Random.Range(randomMin, randomMax);
-                time = Time.time;
-
+                float direction = Mathf.Sign(transform.position.y);
+                RB.velocity = new Vector2(0, direction * speed);
             }
-
         }
 
         public void increaseHeight()
