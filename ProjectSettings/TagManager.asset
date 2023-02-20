@@ -5,7 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ball
-  - Bars
+  - Player
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -21,7 +22,7 @@ TagManager:
   - 
   - Barras
   - Ball
-  - 
+  - LostWin
   - 
   - 
   - 

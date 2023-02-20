@@ -1,27 +1,31 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace PongGame.Manager
+namespace PongGame.Managers
 {
     public class GameManager : MonoBehaviour
     {
+        public float playerScore = 0f;
+        public float enemyScore = 0f;
+         
 
-        public static GameManager instance;
+        public static GameManager Instance;
 
 
         public static event Action<GameState> OnGameStateChanged;
-        public static GameObject ball { get; private set; }
-        public static GameObject[] bars { get; private set; }
+        public  GameObject ball { get; private set; }
+        public  GameObject player { get; private set; }
+        public  GameObject enemy { get; private set; }
 
         public GameState State;
 
+
         private void Awake()
         {
-            instance = this;
+            Instance = this;
             ball = GameObject.FindGameObjectWithTag("Ball");
-            bars = GameObject.FindGameObjectsWithTag("Bars");
+            player = GameObject.FindGameObjectWithTag("Player");
+            enemy = GameObject.FindGameObjectWithTag("Enemy");
 
         }
 
@@ -29,6 +33,20 @@ namespace PongGame.Manager
         {
             UpdateGameState(GameState.Gameplay);
         }
+
+        private void Update()
+        {
+        }
+
+        public void increaseScores(float val, Score character)
+        {
+           
+            if (character == Score.Player) playerScore += val; 
+            if (character == Score.Enemy) enemyScore += val; 
+
+        }
+
+        #region GameState Functions
 
         public void UpdateGameState(GameState newState)
         {
@@ -43,7 +61,10 @@ namespace PongGame.Manager
                     HandleResumeGame();
                     break;
                 case GameState.Reset:
-                    HandleReset();
+                    HandleReset(false);
+                    break;
+                case GameState.Restart:
+                    HandleReset(true);
                     break;
 
             }
@@ -51,23 +72,28 @@ namespace PongGame.Manager
             OnGameStateChanged?.Invoke(newState);
         }
 
-        
-
-        private void HandleReset()
+        private void HandleReset(bool resetScore)
         {
+            if (resetScore)
+            {
+                playerScore = 0;
+                enemyScore = 0;
+                player.transform.localScale = new Vector3(0.5f, 3, 1);
+                enemy.transform.localScale = new Vector3(0.5f, 3, 1);
+
+
+            }
+
             ball.transform.position = Vector3.zero;
 
-            bars[0].transform.position = new Vector3(7, 0, 0);
-            bars[0].transform.localScale = new Vector3(0.5f, 3, 1);
+            player.transform.position = new Vector3(-7, 0, 0);
 
-            bars[1].transform.localScale = new Vector3(0.5f, 3, 1);
-            bars[1].transform.position = new Vector3(-7, 0, 0);
+            enemy.transform.position = new Vector3(7, 0, 0);
 
 
-            instance.UpdateGameState(GameState.Gameplay);
+            Instance.UpdateGameState(GameState.Gameplay);
 
         }
-
 
         private void HandleResumeGame()
         {
@@ -80,20 +106,24 @@ namespace PongGame.Manager
         {
             Time.timeScale = 0;
         }
-
-
+        
+        #endregion
 
     }
-
-
-
 
     public enum GameState
     {
         Pause,
         Gameplay,
-        Reset
+        Reset,
+        Restart
         
+    }
+    public enum Score
+    {
+        Player,
+        Enemy
+
     }
 
 
