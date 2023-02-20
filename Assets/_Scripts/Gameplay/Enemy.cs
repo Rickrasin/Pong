@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PongGame.Interfaces;
 using System.Threading;
-using PongGame.Manager;
+using PongGame.Managers;
 
 namespace PongGame.Enemy
 {
@@ -33,7 +33,7 @@ namespace PongGame.Enemy
         {
             RB = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
-            ball = GameManager.ball.transform;
+            ball = GameObject.FindGameObjectWithTag("Ball").transform;
             randomValue = Random.Range(randomMin, randomMax);
 
             time = Time.time;

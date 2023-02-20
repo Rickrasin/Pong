@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PongGame.Interfaces;
-using PongGame.Manager;
+using PongGame.Managers;
 
 namespace PongGame.Player
 {
@@ -45,7 +45,7 @@ namespace PongGame.Player
 
             if(ESC)
             {
-                GameManager.instance.UpdateGameState(GameState.Pause);
+                GameManager.Instance.UpdateGameState(GameState.Pause);
             }
 
 
