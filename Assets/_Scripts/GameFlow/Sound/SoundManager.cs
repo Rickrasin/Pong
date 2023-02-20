@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static Unity.VisualScripting.Member;
+using UnityEngine.UI;
 
 namespace PongGame.Managers
 {
@@ -11,20 +9,26 @@ namespace PongGame.Managers
 
         [SerializeField] private AudioSource _musicSource;
         [SerializeField] private AudioSource _effectSource;
+        [SerializeField] private Slider _slider;
+        [Range(0, 1)] private float _volume = 0.7f;
 
         private void Awake()
         {
-            if (Instance == null)
-            {
+           
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+           
 
-            
+
+        }
+        private void Start()
+        {
+            _slider.value = _volume;
+        }
+
+        private void Update()
+        {
+            _volume = _slider.value;
+            ChangeMasterVolume(_volume);
         }
 
         public void PlaySound(AudioClip clip)
@@ -46,5 +50,10 @@ namespace PongGame.Managers
         {
             _effectSource.mute = !_musicSource.mute;
         }
+
+
+
+
+       
     }
 }
